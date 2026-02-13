@@ -1,5 +1,7 @@
 # High-Volume Users Dashboard
 
+DEMO: https://users-app-sn.vercel.app/
+
 ## 🚀 Overview
 
 This project is a high-performance React application designed to manage large datasets (10k-100k+ records) with a focus on rendering efficiency, maintainability, and user experience. It serves as a technical demonstration of senior-level frontend architecture decisions, specifically targeting bottlenecks common in data-heavy internal tools.
