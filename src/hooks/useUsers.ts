@@ -9,6 +9,7 @@ import {
 } from '@tanstack/react-query';
 import { fetchUsers, patchUser } from '../api/users.api';
 import type { UpdateUserPayload, User, UserStatus } from '../types/user.types';
+import { filterUsers, sortUsers } from '../utils/userUtils';
 
 export type SortKey = 'name' | 'email' | 'age';
 export type SortDirection = 'asc' | 'desc';
@@ -112,43 +113,16 @@ export function useUsers(): UseUsersResult {
     const data = query.data ?? [];
     if (!data.length) return data;
 
-    const searchLower = filters.search.trim().toLowerCase();
-
     // 1. Filter
-    let result = data;
-    if (searchLower) {
-      result = result.filter(
-        (user) =>
-          user.name.toLowerCase().includes(searchLower) ||
-          user.email.toLowerCase().includes(searchLower)
-      );
-    }
-
-    if (filters.status !== 'all') {
-      result = result.filter((user) => user.status === filters.status);
-    }
+    // Note: filterUsers handles combining search and status logic efficiently
+    let result = filterUsers(data, filters.search, filters.status);
 
     // 2. Sort
-    const { sortKey, sortDirection } = filters;
-    const direction = sortDirection === 'asc' ? 1 : -1;
-
-    // Use a simpler sort for stability and performance
-    // Note: Array.prototype.sort is in-place, so we MUST copy the array.
-    const sorted = [...result].sort((a, b) => {
-      if (sortKey === 'age') {
-        return (a.age - b.age) * direction;
-      }
-
-      const aVal = a[sortKey].toLowerCase();
-      const bVal = b[sortKey].toLowerCase();
-
-      if (aVal < bVal) return -1 * direction;
-      if (aVal > bVal) return 1 * direction;
-      return 0;
-    });
+    // Note: sortUsers returns a new array copy, preserving immutability
+    const sorted = sortUsers(result, filters.sortKey, filters.sortDirection);
 
     return sorted;
-  }, [query.data, filters]);
+  }, [query.data, filters.search, filters.status, filters.sortKey, filters.sortDirection]);
 
   const updateUserMutation = useUserMutation();
 
