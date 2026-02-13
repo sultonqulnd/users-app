@@ -38,31 +38,40 @@ export function useUserMutation() {
   return useMutation<User, unknown, UpdateUserPayload, { previousUsers?: User[] }>({
     mutationFn: patchUser,
     onMutate: async (variables) => {
+      // Cancel any outgoing refetches (so they don't overwrite our optimistic update)
       await queryClient.cancelQueries({ queryKey: QUERY_KEY });
 
+      // Snapshot the previous value
       const previousUsers = queryClient.getQueryData<User[]>(QUERY_KEY);
 
+      // Optimistically update to the new value
       queryClient.setQueryData<User[]>(QUERY_KEY, (old) => {
-        if (!old) return old ?? [];
+        if (!old) return [];
         return old.map((user) =>
           user.id === variables.id ? { ...user, name: variables.name, age: variables.age } : user
         );
       });
 
+      // Return a context object with the snapshotted value
       return { previousUsers };
     },
     onError: (_error, _variables, context) => {
+      // If the mutation fails, use the context returned from onMutate to roll back
       if (context?.previousUsers) {
         queryClient.setQueryData<User[]>(QUERY_KEY, context.previousUsers);
       }
       message.error('Update failed. Changes have been rolled back.');
     },
-    onSuccess: () => {
-      message.success('User updated (optimistic update simulated).');
-    },
-    onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: QUERY_KEY });
+    onSuccess: (data) => {
+      // Update the cache with the actual server response to ensure consistency
+      // This avoids a heavy refetch of the entire 10,000 user list
+      queryClient.setQueryData<User[]>(QUERY_KEY, (old) => {
+        if (!old) return [];
+        return old.map((user) => (user.id === data.id ? data : user));
+      });
+      message.success('User updated successfully.');
     }
+    // No onSettled/invalidateQueries to prevent refetching 10k items
   });
 }
 
