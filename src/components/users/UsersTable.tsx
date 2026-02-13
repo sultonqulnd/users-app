@@ -56,11 +56,15 @@ export const UsersTable: React.FC = () => {
 
   const parentRef = React.useRef<HTMLDivElement | null>(null);
 
+  // Virtualization strategy:
+  // We use a fixed-height container (600px) and render only the visible rows (+overscan).
+  // This ensures the DOM remains lightweight even with 10,000+ users.
+  // We pass `top` and `height` directly to UserRow to avoid per-row layout thrashing.
   const rowVirtualizer = useVirtualizer({
     count: users.length,
     getScrollElement: () => parentRef.current,
     estimateSize: () => ROW_HEIGHT,
-    overscan: 10
+    overscan: 10 // Render 10 items outside viewport to smooth scrolling
   });
 
   const virtualItems = rowVirtualizer.getVirtualItems();
@@ -108,6 +112,11 @@ export const UsersTable: React.FC = () => {
             Age {headerSortIndicators.age}
           </Button>
         </div>
+      </div>
+      
+      {/* Show count to confirm data volume */}
+      <div className="text-right text-xs text-slate-400 px-1">
+        Showing {users.length.toLocaleString()} users
       </div>
 
       {query.isLoading && (
