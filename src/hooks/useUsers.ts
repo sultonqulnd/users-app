@@ -27,7 +27,12 @@ export interface UseUsersResult {
   setSearch: (value: string) => void;
   setStatus: (value: UsersFilters['status']) => void;
   setSort: (key: SortKey) => void;
-  sortedFilteredUsers: User[];
+  paginatedUsers: User[];
+  totalCount: number;
+  page: number;
+  pageSize: number;
+  setPage: (page: number) => void;
+  setPageSize: (size: number) => void;
   updateUserMutation: UseMutationResult<User, unknown, UpdateUserPayload, { previousUsers?: User[] }>;
 }
 
@@ -39,40 +44,29 @@ export function useUserMutation() {
   return useMutation<User, unknown, UpdateUserPayload, { previousUsers?: User[] }>({
     mutationFn: patchUser,
     onMutate: async (variables) => {
-      // Cancel any outgoing refetches (so they don't overwrite our optimistic update)
       await queryClient.cancelQueries({ queryKey: QUERY_KEY });
-
-      // Snapshot the previous value
       const previousUsers = queryClient.getQueryData<User[]>(QUERY_KEY);
-
-      // Optimistically update to the new value
       queryClient.setQueryData<User[]>(QUERY_KEY, (old) => {
         if (!old) return [];
         return old.map((user) =>
           user.id === variables.id ? { ...user, name: variables.name, age: variables.age } : user
         );
       });
-
-      // Return a context object with the snapshotted value
       return { previousUsers };
     },
     onError: (_error, _variables, context) => {
-      // If the mutation fails, use the context returned from onMutate to roll back
       if (context?.previousUsers) {
         queryClient.setQueryData<User[]>(QUERY_KEY, context.previousUsers);
       }
       message.error('Update failed. Changes have been rolled back.');
     },
     onSuccess: (data) => {
-      // Update the cache with the actual server response to ensure consistency
-      // This avoids a heavy refetch of the entire 10,000 user list
       queryClient.setQueryData<User[]>(QUERY_KEY, (old) => {
         if (!old) return [];
         return old.map((user) => (user.id === data.id ? data : user));
       });
       message.success('User updated successfully.');
     }
-    // No onSettled/invalidateQueries to prevent refetching 10k items
   });
 }
 
@@ -84,19 +78,24 @@ export function useUsers(): UseUsersResult {
     sortDirection: 'asc'
   });
 
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+
   const query = useQuery<User[]>({
     queryKey: QUERY_KEY,
     queryFn: fetchUsers,
-    staleTime: 1000 * 60 * 5, // 5 minutes
+    staleTime: 1000 * 60 * 5,
     gcTime: 1000 * 60 * 10
   });
 
   const setSearch = useCallback((value: string) => {
     setFilters((prev) => ({ ...prev, search: value }));
+    setPage(1);
   }, []);
 
   const setStatus = useCallback((value: UsersFilters['status']) => {
     setFilters((prev) => ({ ...prev, status: value }));
+    setPage(1);
   }, []);
 
   const setSort = useCallback((key: SortKey) => {
@@ -112,17 +111,15 @@ export function useUsers(): UseUsersResult {
   const sortedFilteredUsers = useMemo(() => {
     const data = query.data ?? [];
     if (!data.length) return data;
-
-    // 1. Filter
-    // Note: filterUsers handles combining search and status logic efficiently
     let result = filterUsers(data, filters.search, filters.status);
-
-    // 2. Sort
-    // Note: sortUsers returns a new array copy, preserving immutability
     const sorted = sortUsers(result, filters.sortKey, filters.sortDirection);
-
     return sorted;
   }, [query.data, filters.search, filters.status, filters.sortKey, filters.sortDirection]);
+
+  const paginatedUsers = useMemo(() => {
+    const start = (page - 1) * pageSize;
+    return sortedFilteredUsers.slice(start, start + pageSize);
+  }, [sortedFilteredUsers, page, pageSize]);
 
   const updateUserMutation = useUserMutation();
 
@@ -132,7 +129,12 @@ export function useUsers(): UseUsersResult {
     setSearch,
     setStatus,
     setSort,
-    sortedFilteredUsers,
+    paginatedUsers,
+    totalCount: sortedFilteredUsers.length,
+    page,
+    pageSize,
+    setPage,
+    setPageSize,
     updateUserMutation
   };
 }

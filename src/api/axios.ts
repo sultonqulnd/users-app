@@ -1,23 +1,19 @@
-import axios, { type AxiosAdapter, type AxiosRequestConfig, type AxiosResponse } from 'axios';
+import axios, { type AxiosAdapter, type InternalAxiosRequestConfig, type AxiosResponse } from 'axios';
 import { getCachedUsers, updateCachedUser } from '../utils/generateUsers';
 import type { UpdateUserPayload, User } from '../types/user.types';
 
-// Artificial network delay between 500–800ms
 function delay<T>(value: T, min = 500, max = 800): Promise<T> {
   const timeout = Math.floor(Math.random() * (max - min + 1)) + min;
   return new Promise((resolve) => setTimeout(() => resolve(value), timeout));
 }
 
-// Random failure helper (e.g. 30% for mutations)
 function shouldFail(probability = 0.3): boolean {
   return Math.random() < probability;
 }
 
-// In-memory "API" adapter
-const mockAdapter: AxiosAdapter = async (config: AxiosRequestConfig): Promise<AxiosResponse> => {
+const mockAdapter: AxiosAdapter = async (config: InternalAxiosRequestConfig): Promise<AxiosResponse> => {
   const { method, url, data } = config;
 
-  // Normalize method / url
   const m = (method ?? 'get').toLowerCase();
   const u = url ?? '';
 
@@ -34,7 +30,6 @@ const mockAdapter: AxiosAdapter = async (config: AxiosRequestConfig): Promise<Ax
   }
 
   if (m === 'patch' && u.startsWith('/api/users/')) {
-    // Simulate random server failure
     if (shouldFail(0.3)) {
       const errorResponse: AxiosResponse = {
         data: { message: 'Random server error' },
@@ -72,7 +67,6 @@ const mockAdapter: AxiosAdapter = async (config: AxiosRequestConfig): Promise<Ax
     return delay(response);
   }
 
-  // Fallback for unsupported routes
   const unsupported: AxiosResponse = {
     data: { message: `Unsupported route: ${m.toUpperCase()} ${u}` },
     status: 400,

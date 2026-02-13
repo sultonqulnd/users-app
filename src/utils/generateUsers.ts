@@ -1,7 +1,6 @@
 import { faker } from '@faker-js/faker';
 import type { User, UserStatus } from '../types/user.types';
 
-// Cache generated users at module scope so the "API" reuses them.
 let cachedUsers: User[] | null = null;
 
 const STATUSES: UserStatus[] = ['active', 'inactive'];

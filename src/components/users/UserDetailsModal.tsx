@@ -33,7 +33,6 @@ export function UserDetailsModal({ user, open, onClose, updateUserMutation }: Pr
       });
       onClose();
     } catch {
-      // Validation errors or mutation errors are handled elsewhere.
     }
   };
 

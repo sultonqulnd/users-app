@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo, useState } from 'react';
-import { Input, Select, Button } from 'antd';
+import { Input, Select, Button, Pagination } from 'antd';
 import { useUsers } from '../../hooks/useUsers';
 import type { User } from '../../types/user.types';
 import { VirtualUserList } from './VirtualUserList';
@@ -17,14 +17,25 @@ function useDebouncedValue<T>(value: T, delay: number): T {
 }
 
 export const UsersTable: React.FC = () => {
-  const { query, filters, setSearch, setStatus, setSort, sortedFilteredUsers, updateUserMutation } =
-    useUsers();
+  const {
+    query,
+    filters,
+    setSearch,
+    setStatus,
+    setSort,
+    paginatedUsers,
+    totalCount,
+    page,
+    pageSize,
+    setPage,
+    setPageSize,
+    updateUserMutation
+  } = useUsers();
 
   const [searchInput, setSearchInput] = useState(filters.search);
   const debouncedSearch = useDebouncedValue(searchInput, 400);
 
   React.useEffect(() => {
-    // Only update filters when debounced value changes to avoid re-sorting on every keypress.
     setSearch(debouncedSearch);
   }, [debouncedSearch, setSearch]);
 
@@ -91,18 +102,31 @@ export const UsersTable: React.FC = () => {
         </div>
       </div>
 
-      {/* Show count to confirm data volume */}
       <div className="text-right text-xs text-slate-400 px-1">
-        Showing {sortedFilteredUsers.length.toLocaleString()} users
+        Found {totalCount.toLocaleString()} users
       </div>
 
       <VirtualUserList
-        users={sortedFilteredUsers}
+        users={paginatedUsers}
         isLoading={query.isLoading}
         isError={query.isError}
         onRetry={handleRetry}
         onRowClick={handleRowClick}
       />
+
+      <div className="flex justify-end">
+        <Pagination
+          current={page}
+          pageSize={pageSize}
+          total={totalCount}
+          onChange={(p, s) => {
+            setPage(p);
+            setPageSize(s);
+          }}
+          showSizeChanger
+          pageSizeOptions={['10', '20', '50', '100']}
+        />
+      </div>
 
       <UserDetailsModal
         user={selectedUser}

@@ -11,7 +11,6 @@ export interface UserRowProps {
 }
 
 const UserRowComponent: React.FC<UserRowProps> = ({ user, onClick, top, height }) => {
-  // Expensive computation is memoized and depends only on stable primitives.
   const score = useMemo(
     () => expensiveComputation({ id: user.id, age: user.age, status: user.status }),
     [user.id, user.age, user.status]
@@ -47,7 +46,6 @@ const UserRowComponent: React.FC<UserRowProps> = ({ user, onClick, top, height }
   );
 };
 
-// Custom comparison to avoid unnecessary re-renders
 export const UserRow = React.memo(
   UserRowComponent,
   (prev, next) =>
