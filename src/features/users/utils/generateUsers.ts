@@ -1,5 +1,5 @@
 import { faker } from '@faker-js/faker';
-import type { User, UserStatus } from '../types/user.types';
+import type { User, UserStatus } from '@/features/users/types';
 
 let cachedUsers: User[] | null = null;
 
@@ -57,4 +57,3 @@ export function updateCachedUser(partial: { id: string; name?: string; age?: num
   cachedUsers[idx] = updated;
   return updated;
 }
-

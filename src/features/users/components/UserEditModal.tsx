@@ -1,17 +1,17 @@
 import { useEffect } from 'react';
 import { Modal, Form, Input, InputNumber } from 'antd';
-import type { User } from '../../types/user.types';
 import type { UseMutationResult } from '@tanstack/react-query';
+import type { User, UpdateUserPayload } from '@/features/users/types';
 
-interface Props {
+interface UserEditModalProps {
   user: User | null;
   open: boolean;
   onClose: () => void;
-  updateUserMutation: UseMutationResult<User, unknown, { id: string; name: string; age: number }>;
+  mutation: UseMutationResult<User, unknown, UpdateUserPayload, unknown>;
 }
 
-export function UserDetailsModal({ user, open, onClose, updateUserMutation }: Props) {
-  const [form] = Form.useForm<{ name: string; age: number }>();
+export function UserEditModal({ user, open, onClose, mutation }: UserEditModalProps) {
+  const [form] = Form.useForm();
 
   useEffect(() => {
     if (user && open) {
@@ -26,7 +26,7 @@ export function UserDetailsModal({ user, open, onClose, updateUserMutation }: Pr
     if (!user) return;
     try {
       const values = await form.validateFields();
-      await updateUserMutation.mutateAsync({
+      await mutation.mutateAsync({
         id: user.id,
         name: values.name,
         age: values.age
@@ -43,19 +43,15 @@ export function UserDetailsModal({ user, open, onClose, updateUserMutation }: Pr
       okText="Save"
       onOk={handleOk}
       onCancel={onClose}
-      confirmLoading={updateUserMutation.isPending}
+      confirmLoading={mutation.isPending}
       destroyOnClose
     >
       {user && (
         <Form form={form} layout="vertical">
-          <Form.Item label="Name" name="name" rules={[{ required: true, message: 'Name is required' }]}>
+          <Form.Item label="Name" name="name" rules={[{ required: true, message: 'Required' }]}>
             <Input />
           </Form.Item>
-          <Form.Item
-            label="Age"
-            name="age"
-            rules={[{ required: true, message: 'Age is required' }]}
-          >
+          <Form.Item label="Age" name="age" rules={[{ required: true, message: 'Required' }]}>
             <InputNumber min={18} max={120} className="w-full" />
           </Form.Item>
           <Form.Item label="Email">
@@ -69,4 +65,3 @@ export function UserDetailsModal({ user, open, onClose, updateUserMutation }: Pr
     </Modal>
   );
 }
-

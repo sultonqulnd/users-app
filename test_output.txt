@@ -1,0 +1,57 @@
+
+> high-volume-users-dashboard@1.0.0 test /Users/sultonqulnd/Documents/projects/users-app
+> vitest run src/features/users/tests/OptimisticUpdate.test.tsx
+
+
+[1m[46m RUN [49m[22m [36mv4.0.18 [39m[90m/Users/sultonqulnd/Documents/projects/users-app[39m
+
+TypeError: window.matchMedia is not a function
+    at /Users/sultonqulnd/Documents/projects/users-app/node_modules/.pnpm/antd@5.29.3_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/antd/lib/_util/responsiveObserver.js:99:30
+    at Array.forEach (<anonymous>)
+    at Object.register (/Users/sultonqulnd/Documents/projects/users-app/node_modules/.pnpm/antd@5.29.3_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/antd/lib/_util/responsiveObserver.js:91:39)
+    at Object.subscribe (/Users/sultonqulnd/Documents/projects/users-app/node_modules/.pnpm/antd@5.29.3_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/antd/lib/_util/responsiveObserver.js:77:16)
+    at /Users/sultonqulnd/Documents/projects/users-app/node_modules/.pnpm/antd@5.29.3_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/antd/lib/grid/hooks/useBreakpoint.js:18:38
+    at /Users/sultonqulnd/Documents/projects/users-app/node_modules/.pnpm/rc-util@5.44.4_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/rc-util/lib/hooks/useLayoutEffect.js:18:12
+    at commitHookEffectListMount (/Users/sultonqulnd/Documents/projects/users-app/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:23189:26)
+    at commitPassiveMountOnFiber (/Users/sultonqulnd/Documents/projects/users-app/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:24970:11)
+    at commitPassiveMountEffects_complete (/Users/sultonqulnd/Documents/projects/users-app/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:24930:9)
+    at commitPassiveMountEffects_begin (/Users/sultonqulnd/Documents/projects/users-app/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:24917:7)
+[90mstderr[2m | src/features/users/tests/OptimisticUpdate.test.tsx[2m > [22m[2mGeneric Optimistic UI Flow[2m > [22m[2mshould optimistically update UI immediately and rollback on API failure
+[22m[39mWarning: [antd: Modal] `destroyOnClose` is deprecated. Please use `destroyOnHidden` instead.
+The above error occurred in the <Pagination> component:
+
+    at Pagination (/Users/sultonqulnd/Documents/projects/users-app/node_modules/.pnpm/antd@5.29.3_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/antd/lib/pagination/Pagination.js:38:7)
+    at div
+    at div
+    at UsersDashboard (/Users/sultonqulnd/Documents/projects/users-app/src/features/users/components/UsersDashboard.tsx:11:147)
+    at QueryClientProvider (file:///Users/sultonqulnd/Documents/projects/users-app/node_modules/.pnpm/@tanstack+react-query@5.90.21_react@18.3.1/node_modules/@tanstack/react-query/build/modern/QueryClientProvider.js:20:3)
+
+Consider adding an error boundary to your tree to customize error handling behavior.
+Visit https://reactjs.org/link/error-boundaries to learn more about error boundaries.
+
+ [31m❯[39m src/features/users/tests/OptimisticUpdate.test.tsx [2m([22m[2m1 test[22m[2m | [22m[31m1 failed[39m[2m)[22m[32m 241[2mms[22m[39m
+[31m     [31m×[31m should optimistically update UI immediately and rollback on API failure[39m[32m 240[2mms[22m[39m
+
+[31m⎯⎯⎯⎯⎯⎯⎯[39m[1m[41m Failed Tests 1 [49m[22m[31m⎯⎯⎯⎯⎯⎯⎯[39m
+
+[41m[1m FAIL [22m[49m src/features/users/tests/OptimisticUpdate.test.tsx[2m > [22mGeneric Optimistic UI Flow[2m > [22mshould optimistically update UI immediately and rollback on API failure
+[31m[1mTypeError[22m: window.matchMedia is not a function[39m
+[90m [2m❯[22m node_modules/.pnpm/antd@5.29.3_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/antd/lib/_util/responsiveObserver.js:[2m99:30[22m[39m
+[90m [2m❯[22m Object.register node_modules/.pnpm/antd@5.29.3_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/antd/lib/_util/responsiveObserver.js:[2m91:39[22m[39m
+[90m [2m❯[22m Object.subscribe node_modules/.pnpm/antd@5.29.3_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/antd/lib/_util/responsiveObserver.js:[2m77:16[22m[39m
+[90m [2m❯[22m node_modules/.pnpm/antd@5.29.3_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/antd/lib/grid/hooks/useBreakpoint.js:[2m18:38[22m[39m
+[90m [2m❯[22m node_modules/.pnpm/rc-util@5.44.4_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/rc-util/lib/hooks/useLayoutEffect.js:[2m18:12[22m[39m
+[90m [2m❯[22m commitHookEffectListMount node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:[2m23189:26[22m[39m
+[90m [2m❯[22m commitPassiveMountOnFiber node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:[2m24970:11[22m[39m
+[90m [2m❯[22m commitPassiveMountEffects_complete node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:[2m24930:9[22m[39m
+[90m [2m❯[22m commitPassiveMountEffects_begin node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:[2m24917:7[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯[22m[39m
+
+
+[2m Test Files [22m [1m[31m1 failed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[31m1 failed[39m[22m[90m (1)[39m
+[2m   Start at [22m 22:53:43
+[2m   Duration [22m 1.53s[2m (transform 68ms, setup 35ms, import 964ms, tests 241ms, environment 227ms)[22m
+
+ ELIFECYCLE  Test failed. See above for more details.

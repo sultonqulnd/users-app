@@ -14,3 +14,12 @@ export interface UpdateUserPayload {
   age: number;
 }
 
+export type SortKey = 'name' | 'email' | 'age';
+export type SortDirection = 'asc' | 'desc';
+
+export interface UserFilters {
+  search: string;
+  status: UserStatus | 'all';
+  sortKey: SortKey;
+  sortDirection: SortDirection;
+}

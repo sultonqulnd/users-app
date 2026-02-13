@@ -1,28 +1,23 @@
+import React from 'react';
 import { Layout, Typography } from 'antd';
-import { UsersTable } from '../components/users/UsersTable';
+import { UsersDashboard } from '@/features/users';
 
 const { Header, Content } = Layout;
-const { Title, Text } = Typography;
+const { Title } = Typography;
 
 export function App() {
   return (
-    <Layout className="min-h-screen">
-      <Header className="bg-white border-b border-slate-200 flex items-center px-6">
-        <div className="flex flex-col gap-0.5">
-          <Title level={4} className="!mb-0">
-            High-Volume Users Dashboard
-          </Title>
-          <Text type="secondary" className="text-xs">
-            10,000 users with virtualized rendering, debounced search, and optimistic updates.
-          </Text>
-        </div>
+    <Layout className="h-screen overflow-hidden">
+      <Header className="bg-white border-b border-slate-200 px-6 flex items-center">
+        <Title level={4} style={{ margin: 0 }}>
+          Users
+        </Title>
       </Header>
-      <Content className="px-6 py-4">
-        <div className="max-w-6xl mx-auto">
-          <UsersTable />
+      <Content className="p-6 overflow-hidden bg-slate-50">
+        <div className="h-full bg-white rounded-lg shadow-sm p-4 overflow-hidden">
+          <UsersDashboard />
         </div>
       </Content>
     </Layout>
   );
 }
-
